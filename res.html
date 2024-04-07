@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200&family=Source+Code+Pro&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300&display=swap" rel="stylesheet">    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Include Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    <div class="table-responsive table-scrollable">
+        <table id="parts" class="table table-dark table-dark table-hover table-responsive table-scrollable">
+
+        </table>
+    </div>
+    <div>
+        <button id="voteButton" class="custom-button">Проголосувати</button>
+    </div>
+    
+</body>
+
+</html>
+<style>
+ 
+    body {
+        overflow: hidden;
+        font-family: 'Afacad', sans-serif;
+        margin: 0;
+        padding: 0;
+        
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: white;
+        background-color: #1f2937; /* Adjust to your preferred dark background color */
+    
+    }
+
+
+
+        /* Style for table */
+        #parts {
+            width: auto;
+            table-layout: fixed;
+        }
+        #parts th:first-child,
+        #parts td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 1;
+           
+        }
+
+    #main {
+        text-align: center;
+        background-color: rgb(255, 255, 255);
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .tit {
+        color: #43517F;
+        font-size: 24px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    .main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+
+    .custom-button {
+        background-color: #43517F;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+  
+</style>
+</style>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, get, set} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import {
+      getAdditionalUserInfo,
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged,
+      OAuthProvider,
+     
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyARKCyiAbxjZ6PbmTasZeQamQvEyCXKl3c",
+        authDomain: "gathery-judge.firebaseapp.com",
+        databaseURL: "https://gathery-judge-default-rtdb.firebaseio.com",
+        projectId: "gathery-judge",
+        storageBucket: "gathery-judge.appspot.com",
+        messagingSenderId: "292987022887",
+        appId: "1:292987022887:web:be06fd10ebbd94b338a802"
+    };
+    const firebaseConfig_ = {
+  apiKey: "AIzaSyBAfxQYO6TNJIdqOB6_DRM4e9NUa1NrWJ0",
+  authDomain: "voting-gathery.firebaseapp.com",
+  databaseURL: "https://voting-gathery-default-rtdb.firebaseio.com",
+  projectId: "voting-gathery",
+  storageBucket: "voting-gathery.appspot.com",
+  messagingSenderId: "236437354667",
+  appId: "1:236437354667:web:48c06bee64b290f4b35fee"
+};
+    const app = initializeApp(firebaseConfig, "gathery-judge-app");
+    const db = getDatabase(app);
+    const app_ = initializeApp(firebaseConfig_, "gathery-voting-app");
+    const db_ = getDatabase(app_);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    
+
+    document.getElementsByClassName
+    function generateParticipantRows(participantsData) {
+        
+        const table = document.getElementById("parts");
+        // Clear existing content
+        table.innerHTML = "";
+
+        // Check if participantsData is not null or undefined
+        if (participantsData) {
+            // Iterate through participants
+            participantsData.forEach(participant => {
+                // Create a column for each participant
+                let columnHTML = `<td>${participant.name}</td>`;
+                table.innerHTML += `<tr>${columnHTML}</tr>`;
+            });
+        }
+    }
+    // Get participant data from Firebase
+    get(ref(db, 'part')).then(snapshot => {
+
+        const participantsData = Object.values(snapshot.val());
+        const user_array = Array.from(Object.keys(snapshot.val()))
+       
+
+        get(ref(db, "/")).then(sn => {
+
+            let rows = Array.from(Object.keys(sn.val()["cry"]))
+            console.log(rows)
+            const columns = Array.from(Object.keys(sn.val()["part"]))
+
+        // Get the table element
+            const table = document.getElementById('parts');
+
+            // Add header row with column names
+            let headerRow = table.insertRow();
+            let firstHeaderCell = headerRow.insertCell();
+            firstHeaderCell.textContent = ''; // Empty cell for the fixed column
+            columns.forEach(column => {
+                let headerCell = headerRow.insertCell();
+                headerCell.textContent = column;
+            });
+
+            // Add rows with data
+            rows.forEach(row => {
+                let newRow = table.insertRow();
+                let fixedCell = newRow.insertCell();
+                fixedCell.textContent = row; // Content for the fixed column
+                columns.forEach(column => {
+                    let cell = newRow.insertCell();
+                    // Here you can set the content of each cell based on your data
+                    
+                    cell.innerHTML = `<input type='checkbox' id='${column}' class='pp'>`; // Sample content for other cells
+                });
+            });
+            })
+        
+        }).catch(error => {
+            console.error("Error retrieving participant data:", error);
+    });
+
+    
+    let result = {}
+    function countAndSetCheckedForParts() {
+    const partIDs = Array.from(document.querySelectorAll('.pp:checked')).map(checkbox => checkbox.id);
+    
+    get(ref(db, 'part')).then(partSnapshot => {
+        let users = Object.keys(partSnapshot.val());
+        let criteriaPromises = [];
+
+        // Fetch all criteria and their values from Firebase
+        for (let criterion in partSnapshot.val()) {
+            criteriaPromises.push(get(ref(db, `cry/${criterion}/value`)).then(valueSnapshot => {
+                return { criterion: criterion, value: valueSnapshot.val() };
+            }));
+        }
+
+        Promise.all(criteriaPromises).then(criteriaValues => {
+            users.forEach(user => {
+                // Initialize result object for the current user
+                result[user] = {};
+                
+                partIDs.forEach(partID => {
+                    // Initialize result for each criterion
+                    result[user][partID] = 0;
+                });
+
+                criteriaValues.forEach(criteriaValue => {
+                    partIDs.forEach(partID => {
+                        // Add the value of the current criterion to the result for the current user
+                        result[user][partID] += (partID === criteriaValue.criterion ? criteriaValue.value : 0);
+                    });
+                });
+
+                // Set the result for the current user in Firebase
+                set(ref(db, `res/${user}/`), result[user]);
+            });
+        });
+    });
+}
+
+    // Your existing code to generate the table and checkboxes...
+
+    // Add event listener to checkboxes using jQuery
+    $(document).on('change', 'input[type="checkbox"]', function() {
+        // Call countAndSetCheckedForParts function when checkboxes change
+        countAndSetCheckedForParts();
+    });
+
+    
+    $('#voteButton').on('click', function() {
+        // Call countAndSetCheckedForParts function when the button is clicked
+        countAndSetCheckedForParts();
+        $('.pp').prop('disabled', true);
+        set(ref(db, `/ready/${log}/`), "+")
+        document.getElementById("voteButton").disabled = true;
+
+    });
+    const log = localStorage.getItem("login")
+    
+    get(ref(db, `/ready/${log}/`)).then(sn => {
+        console.log(log)
+        
+        function dis() {
+            if (sn.val() === "+") {
+            $('.pp').prop('disabled', true);
+            document.getElementById("voteButton").disabled = true;
+        }
+        }
+        setTimeout(dis, 1000)
+    })
+    
+</script>

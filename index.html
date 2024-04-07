@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200&family=Source+Code+Pro&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="/scripts/admin/main/admin-script.js"></script>
+    <link rel="icon" type="image/png" href="../assets/logo.png">
+    <link rel="stylesheet" href="../styles/admin/style.css">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <script src="scripts/admin/main/jury.js"></script>
+
+</head>
+<style>
+    .breadcrumb-wrapper .breadcrumb {
+            background-color: transparent; /* Ensure the breadcrumb background is transparent */
+            color: #ffffff; /* Set the breadcrumb text color to white or any other color that contrasts well with black */
+        }
+        .breadcrumb-wrapper .breadcrumb .breadcrumb-item a {
+            color: #ffffff; /* Set the link color */
+        }
+        .breadcrumb-wrapper .breadcrumb .breadcrumb-item.active {
+            color: #ffffff; /* Set the active item color */
+        }
+        .breadcrumb-wrapper .breadcrumb .breadcrumb-item.active::before {
+            color: #ffffff; /* Set the active item color */
+        }
+        .breadcrumb-wrapper .breadcrumb .breadcrumb-item::before {
+            color: #ffffff; /* Set the active item color */
+        }
+        a {
+            text-decoration: none;;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #1f2937;
+            color: white;
+        }
+
+        .modal-body{
+            background-color: #1f2937;
+        }
+        .modal-header {
+            background-color: #1f2937;
+            border: none;
+        }
+        .modal-footer {
+            border: none;
+            background-color: #1f2937;
+        }
+</style>
+<body>
+    <br>
+    <nav aria-label="breadcrumb" class="breadcrumb-wrapper ps-3">
+        <ol class="breadcrumb breadcrumb-light">
+          <li class="breadcrumb-item">
+            <a href="../index.html">Gathery Voting Admin</a>
+          </li>
+        </ol>
+      </nav>
+
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Додати користувача</h1>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form class="fr">
+                <input type="text" id="mail" placeholder="Mail" required>
+                <input type="text" id="teacher_" placeholder="Teacher" required>
+            </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="save_btn">Додати</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="addUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Додати учасника</h1>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form class="fr">
+                <input type="text" id="login" placeholder="Login" required>
+                <input type="text" id="teacher" placeholder="Teacher" required>
+            </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="save">Додати</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="addJury" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Додати жюрі</h1>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form class="fr">
+                <input type="text" id="mail_j" placeholder="Mail" required>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="save_j">Додати</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Replace the text link with a home icon -->
+    <div class="container">
+        <div style="text-align: center;">
+            <br>
+            <button onclick="window.location.href = 'manage.html'" class="btn btn-primary" style="width: 250px;">Керувати</button>
+            <br>
+            <br>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUser" style="width: 250px;">
+              Додати учасника
+            </button><br>
+            <br>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 250px;">
+              Додати користувача
+            </button>
+            <br>
+            <br>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addJury" style="width: 250px;">
+              Додати жюрі
+            </button>
+            <br>
+            <br>
+            <button type="button" class="btn btn-primary" style="width: 250px;" onclick="window.location.href = 'users.html'">
+              Користувачі
+            </button>
+            <br>
+            <br>
+            <button onclick="window.location.href = 'result.html'" class="btn btn-primary" style="width: 250px;">Result</button>
+        </div>
+    </div>
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL' crossorigin='anonymous'></script>
+   
+</body>
+</html>
+<script type="module">
+
+document.getElementById("save").addEventListener("click", function () {
+    addUser()})
+
+    
+</script>
