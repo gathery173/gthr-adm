@@ -225,8 +225,12 @@ background-color: #1f2937; /* Adjust to your preferred dark background color */
                     Object.keys(judges).forEach(judgeName => {
                         // Iterate through each participant for the current judge
                         participants.forEach(participant => {
+                            
                             // Add the judge's vote for the participant to the total
-                            res[participant] += judges[judgeName][participant];
+                            const vote = judges[judgeName][participant];
+                            if (!isNaN(vote)) { // Check if the vote is a number
+                                res[participant] += vote;
+                            }
                         });
                     });
 
