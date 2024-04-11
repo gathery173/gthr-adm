@@ -18,7 +18,7 @@
 
     <link rel="icon" type="image/png" href="../assets/logo.png">
     <link rel="stylesheet" href="../styles/admin/style.css">
-    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="icon" type="image/png" href="../assets/logo.png">
 
     <style>
         
@@ -119,9 +119,7 @@ background-color: #1f2937; /* Adjust to your preferred dark background color */
 
     <div style="width: 100%; height:100%" class="m">
         <div id="contentContainer">
-            <div id="j-results" class="results-container">
-                <!-- Results will be displayed here dynamically -->
-            </div>
+            
             <div id="results" class="results-container">
                 <!-- Results will be displayed here dynamically -->
             </div>
@@ -158,9 +156,10 @@ background-color: #1f2937; /* Adjust to your preferred dark background color */
         
         
             
-        function displayResults(judgeResults) {
-            const resultsContainer = document.getElementById('results');
+        function displayResults() {
 
+            const resultsContainer = document.getElementById('results');
+         
             // Retrieve user results
             firebase.database().ref('part').orderByChild('votes').once('value', snapshot => {
                 resultsContainer.innerHTML = '';
@@ -178,104 +177,40 @@ background-color: #1f2937; /* Adjust to your preferred dark background color */
                 // Sort participants by votes in descending order
                 participants.sort((a, b) => b.votes - a.votes);
 
-                // Exclude participants in judge's top list
-                const filteredParticipants = participants.filter(participant => !judgeResults.includes(participant.name));
+                const mostVotedParticipant = participants[0];
 
-                // Display the results
-                filteredParticipants.forEach((participant, index) => {
-                firebase.database().ref("/").once("value", sn => {
-                    console.log(snapshot.val()[participant])
-                })
+                // Separate display:
+                const mostVotesContainer = document.createElement('div');
+                mostVotesContainer.className = 'result-item golden'; // Example class for styling
+                mostVotesContainer.innerHTML = `
+                    <div class="participant-name">Глядацькі симпатії</div>
+                    <div class="votes">${mostVotedParticipant.name}</div>
+                `;
+                resultsContainer.appendChild(mostVotesContainer);
                
-                    const participantItem = document.createElement('div');
-                    participantItem.className = 'result-item';
-                    if (index === 0) {
-                        participantItem.classList.add('golden');
-                    }
-
-                    participantItem.innerHTML = `
-                        <div class="participant-name">${participant.name}</div>
-                        <div class="votes">${participant.votes}</div>
-                    `;
-                    resultsContainer.appendChild(participantItem);
                 });
-            });
-        }
-
-        function displayJudgeResults() {
-            const resultsContainer = document.getElementById('j-results');
-
-            firebase.app("jd").database().ref('res').once('value', snapshot => {
-                // Clear existing content
-                resultsContainer.innerHTML = '';
-
-                const judges = snapshot.val();
-                const res = {};
-
-                // Retrieve participant data from Firebase
-                firebase.app("jd").database().ref('part').once('value', snapshot => {
-                    const participants = Object.keys(snapshot.val());
-
-                    // Initialize res object with participants and votes set to 0
-                    participants.forEach(participant => {
-                        res[participant] = 0;
-                    });
-
-                    // Loop through each judge
-                    Object.keys(judges).forEach(judgeName => {
-                        // Iterate through each participant for the current judge
-                        participants.forEach(participant => {
-                            
-                            // Add the judge's vote for the participant to the total
-                            const vote = judges[judgeName][participant];
-                            if (!isNaN(vote)) { // Check if the vote is a number
-                                res[participant] += vote;
-                            }
-                        });
-                    });
-
-                    // Get the maxs count from Firebase
-                    firebase.app("jd").database().ref('sets/places').get().then(snapshot => {
-                        const maxs = snapshot.val();
-
-                        // Sort participants by votes and limit to maxs count
-                        const sortedParticipants = Object.entries(res)
-                            .sort(([, votesA], [, votesB]) => votesB - votesA)
-                            .slice(0, maxs)
-                            .map(([participant]) => participant); // Get only participant names
-
-                        // Display the judge results
-                        sortedParticipants.forEach((participant, index) => {
-                            const participantItem = document.createElement('div');
-                            participantItem.className = 'result-item golden';
-                            if (index === 0) {
-                                participantItem.innerHTML = `
-                                    <div class="participant-name">
-                                        <i class="fas fa-crown" style="margin-right: 5px;"></i>${participant}
-                                    </div>
-                                    <div class="votes">${res[participant]}</div>
-                                `;
-                            } else {
-                                participantItem.innerHTML = `
-                                    <div class="participant-name">${participant}</div>
-                                    <div class="votes">${res[participant]}</div>
-                                `;
-                            }
-                            resultsContainer.appendChild(participantItem);
-                        });
-
-                        // Call displayResults function with judge results to filter user results
-                        displayResults(sortedParticipants);
-                    });
-                });
-            });
+                firebase.app("jd").database().ref("res").once("value", sn => {
+                    console.log(sn.val())
+                    Array.from(Object.keys(sn.val())).forEach(el => {
+                        const place = document.createElement('div');
+                        place.className = 'result-item golden'; // Example class for styling
+                        place.innerHTML = `
+                            <div class="participant-name">${el}</div>
+                            <div class="votes">${sn.val()[el]}</div>
+                        `;
+                        resultsContainer.appendChild(place);
+                    })
+                }) 
         }
 
 // Call the function to display res results
 
-    displayJudgeResults();
-    
 
+// Call the function to nominate participants based on the highest number of votes for each criterion
+
+
+    
+displayResults()
         
     </script>
 </body>
